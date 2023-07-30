@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrative Visualization</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js"
+        integrity="sha512-iBAeBWWWFb8HqSBcrqcz98iIpuVH1la39dEYHtyQ/pGpeCQTQVvLJOWAuhv2Q7JSHp9k7hWA7sGxU3hHJe+tFg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div class="title">
+        <span>Nutrition, Physical Activity, and Obesity Data Visualization</span>
+    </div>
+    <div id="about-data">
+        <h3>About data</h3>
+        <p>The dataset used for this visualization includes data on nutrition, physical activity, and obesity from
+            Behavioral Risk Factor Surveillance System. This data is used for DNPAO's Data, Trends, and Maps
+            database, which provides national and state specific data on nutrition, physical activity, and obesity.
+        </p>
+        <p><a href="https://catalog.data.gov/dataset/nutrition-physical-activity-and-obesity-behavioral-risk-factor-surveillance-system"
+                target="_blank">Data Source</a>
+            <a href="https://www.cdc.gov/nccdphp/dnpao/index.html" target="_blank">More Info</a>
+        </p>
+    </div>
+    <div class="container">
+        <div class="grid-item left-col">
+            <div class="parameter" id="state-list-row">
+            </div>
+            <div class="parameter" id="topic-list-row">
+            </div>
+            <div class="parameter" id="demographic-list-row">
+            </div>
+            <div class="parameter" id="question-list-row">
+            </div>
+        </div>
+        <div class="right-col" id="data-visualization">
+            <div id="warning-alert"></div>
+        </div>
+    </div>
+    <script src="script.js" type="module"></script>
+</body>
+
+</html>
