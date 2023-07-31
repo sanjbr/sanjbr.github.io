@@ -187,10 +187,10 @@ const lineChart = (data) => {
         .domain(filtered_data.map(d => d["YearStart"]))
         .range([0, width]);
 
-    let minPercentVal = d3.min(filtered_data, function (d) { return d.Data_Value; });
-    let maxPercentVal = d3.max(filtered_data, function (d) { return d.Data_Value; });
-    let minDomain = parseFloat(minPercentVal) <= 3 ? parseFloat(minPercentVal) : (parseFloat(minPercentVal) - 4)
-    let maxDomain = parseFloat(maxPercentVal) >= 97 ? parseFloat(maxPercentVal) : (parseFloat(maxPercentVal) + 4)
+    let minPercentVal = d3.min(filtered_data, function (d) { return parseFloat(d.Data_Value); });
+    let maxPercentVal = d3.max(filtered_data, function (d) { return parseFloat(d.Data_Value); });
+    let minDomain = minPercentVal <= 3 ? minPercentVal : (minPercentVal - 4)
+    let maxDomain = maxPercentVal >= 97 ? maxPercentVal : (maxPercentVal + 4)
 
     // scale for mapping data points on y-axis
     let yScale = d3.scaleLinear()
@@ -248,11 +248,11 @@ const lineChart = (data) => {
         .text("Percent");
 
     // create annotations
-    let lowest_data = filtered_data.filter(row => row["Data_Value"] == minPercentVal)[0],
+    let lowest_data = filtered_data.filter(row => parseFloat(row["Data_Value"]) == minPercentVal)[0],
         lowest_x = xScale(lowest_data.YearStart) + xScale.bandwidth() / 2,
         lowest_y = yScale(lowest_data.Data_Value);
 
-    let highest_data = filtered_data.filter(row => row["Data_Value"] == maxPercentVal)[0],
+    let highest_data = filtered_data.filter(row => parseFloat(row["Data_Value"]) == maxPercentVal)[0],
         highest_x = xScale(highest_data.YearStart) + xScale.bandwidth() / 2,
         highest_y = yScale(highest_data.Data_Value);
 
