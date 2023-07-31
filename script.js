@@ -65,7 +65,7 @@ const addList = (listName, id, listElements, getData) => {
     let label = document.createElement("label");
     label.id = id + "-list-label";
     label.innerHTML = listName;
-    label.htmlFor = id;
+    label.htmlFor = id + "-list";
 
     let ul = document.createElement("ul");
     ul.classList.add("list");
@@ -107,6 +107,7 @@ const addList = (listName, id, listElements, getData) => {
     parent.appendChild(label);
     parent.appendChild(ul);
 
+    // select default list item and dispatch click event
     let elementToBeSelected;
     if (id == "topic") {
         elementToBeSelected = ul.querySelector(".list-item:last-child");
@@ -114,8 +115,7 @@ const addList = (listName, id, listElements, getData) => {
     else {
         elementToBeSelected = ul.querySelector(".list-item:first-child");
     }
-
-    let event = new Event("click");
+    const event = new Event("click");
     elementToBeSelected.dispatchEvent(event);
 }
 
@@ -136,15 +136,19 @@ const warningAlert = () => {
 
 const lineChart = (data) => {
 
+    // determine width and height for svg
     const parentContainer = document.getElementById("data-visualization");
     let parentStyle = window.getComputedStyle(parentContainer);
     let parentPadding = parseFloat(parentStyle.paddingLeft) + parseFloat(parentStyle.paddingRight);
+
     const svg_width = parentContainer.offsetWidth - parentPadding;
     const svg_height = window.innerHeight / 1.2;
 
-    cleanElement("warning");
+    // clean existing chart and warning if present
     cleanElement("chart");
+    cleanElement("warning");
 
+    // check for required data, and parameters before generating chart
     if (data == null) {
         warningAlert();
         return;
@@ -178,20 +182,22 @@ const lineChart = (data) => {
         width = svg_width - marginTop,
         height = svg_height - marginBottom
 
-    // map data points on the chart
+    // scale for mapping data points x-axis
     let xScale = d3.scaleBand()
         .domain(filtered_data.map(d => d["YearStart"]))
         .range([0, width]);
 
     let minPercentVal = d3.min(filtered_data, function (d) { return d.Data_Value; });
     let maxPercentVal = d3.max(filtered_data, function (d) { return d.Data_Value; });
-    let minDomain = parseFloat(minPercentVal) <= 10 ? parseFloat(minPercentVal) : (parseFloat(minPercentVal) - 4)
-    let maxDomain = parseFloat(maxPercentVal) >= 90 ? parseFloat(maxPercentVal) : (parseFloat(maxPercentVal) + 4)
+    let minDomain = parseFloat(minPercentVal) <= 3 ? parseFloat(minPercentVal) : (parseFloat(minPercentVal) - 4)
+    let maxDomain = parseFloat(maxPercentVal) >= 97 ? parseFloat(maxPercentVal) : (parseFloat(maxPercentVal) + 4)
 
+    // scale for mapping data points on y-axis
     let yScale = d3.scaleLinear()
         .domain([minDomain, maxDomain])
         .range([height, 0]);
 
+    // create circles for the datapoints on the chart
     svg.append("g")
         .selectAll("dot")
         .data(filtered_data)
@@ -204,6 +210,7 @@ const lineChart = (data) => {
 
     // create multi-line
     let uniqueDemographicCategory = getUniqueColumnData(filtered_data, "Stratification1")
+    // color scale based on the unique demographic categories
     let colorScale = d3.scaleOrdinal()
         .domain(uniqueDemographicCategory)
         .range(d3.schemeCategory10)
@@ -212,6 +219,7 @@ const lineChart = (data) => {
         .y(d => yScale(d.Data_Value))
         .curve(d3.curveMonotoneX);
 
+    // create line path for the datapoints of each demographic category
     uniqueDemographicCategory.forEach(category => {
         svg.append("path")
             .datum(filtered_data.filter(row => row["Stratification1"] === category))
@@ -225,16 +233,15 @@ const lineChart = (data) => {
     svg.append("g")
         .attr("transform", "translate(" + 0 + "," + height + ")")
         .call(d3.axisBottom(xScale));
-
     svg.append("g")
         .call(d3.axisLeft(yScale));
 
+    // write text describing the axis
     svg.append("text")
         .attr("x", width / 2)
         .attr("y", svg_height - (marginBottom - 50))
         .attr("text-anchor", "middle")
         .text("Year");
-
     svg.append("text")
         .attr("text-anchor", "middle")
         .attr("transform", "translate(" + (-30) + "," + (height / 2) + ") rotate(-90)")
@@ -249,6 +256,7 @@ const lineChart = (data) => {
         highest_x = xScale(highest_data.YearStart) + xScale.bandwidth() / 2,
         highest_y = yScale(highest_data.Data_Value);
 
+    // creating annotations for lowest and highest values
     const annotations = [
         {
             note: {
